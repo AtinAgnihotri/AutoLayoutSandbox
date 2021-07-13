@@ -8,10 +8,77 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    var labelViewDictionary = [String: UILabel]()
+    let labels = ["THESE", "ARE", "SOME", "AWESOME", "LABELS"]
+    let labelColorDictionary: Dictionary<String, UIColor> = [
+        "THESE": .red,
+        "ARE": .cyan,
+        "SOME": .yellow,
+        "AWESOME": .orange,
+        "LABELS": .green,
+    ]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        createUI()
+        
+    }
+    
+    func createUI() {
+        createAllLabels()
+        addConstraintsToLabels()
+    }
+    
+    func createAllLabels() {
+        print("START CREATING LABEL")
+        var indx = 1
+        for indx in 0..<labels.count {
+            let label = labels[indx]
+            print(label)
+            createLabel(index: indx+1, text: label, color: labelColorDictionary[label] ?? .black)
+        }
+        print("END CREATING LABEL")
+    }
+    
+    func createLabel(index: Int, text: String, color: UIColor) {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.backgroundColor = color
+        label.text = text
+        label.sizeToFit()
+        view.addSubview(label)
+        labelViewDictionary["label\(index)"] = label
+    }
+    
+    func addConstraintsToLabels() {
+        for label in labels {
+            let uiLabel = labelViewDictionary[label]
+            uiLabel?.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+            uiLabel?.heightAnchor.constraint(equalTo: 88) = true
+        }
+//        addHorizontalConstraints()
+//        addVerticalConstraints()
+    }
+    
+    func addHorizontalConstraints() {
+        for eachKey in labelViewDictionary.keys {
+            view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[\(eachKey)]|", options: [], metrics: nil, views: labelViewDictionary))
+        }
+    }
+    
+    func addVerticalConstraints() {
+        let metrics = ["labelHeight": 88]
+        var vfl = "V:|-"
+        for indx in 0..<labels.count {
+            if indx == 0 { vfl += "[label\(indx+1)(labelHeight@999)]-" }
+            else { vfl += "[label\(indx+1)(label1)]-" }
+        }
+        vfl += "(>=10)-|"
+//        vfl = vfl.trimmingCharacters(in: CharacterSet(charactersIn: "-"))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: vfl, options: [], metrics: metrics, views: labelViewDictionary))
     }
 
 
