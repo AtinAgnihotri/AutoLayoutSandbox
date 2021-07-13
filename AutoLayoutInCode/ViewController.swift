@@ -33,14 +33,14 @@ class ViewController: UIViewController {
     }
     
     func createAllLabels() {
-        print("START CREATING LABEL")
+//        print("START CREATING LABEL")
         var indx = 1
         for indx in 0..<labels.count {
             let label = labels[indx]
-            print(label)
+//            print(label)
             createLabel(index: indx+1, text: label, color: labelColorDictionary[label] ?? .black)
         }
-        print("END CREATING LABEL")
+//        print("END CREATING LABEL")
     }
     
     func createLabel(index: Int, text: String, color: UIColor) {
@@ -54,10 +54,27 @@ class ViewController: UIViewController {
     }
     
     func addConstraintsToLabels() {
-        for label in labels {
-            let uiLabel = labelViewDictionary[label]
-            uiLabel?.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-            uiLabel?.heightAnchor.constraint(equalTo: 88) = true
+        var previousUILabel: UILabel?
+        
+        for indx in 0..<labels.count {
+            let uiLabel = labelViewDictionary["label\(indx+1)"]
+//            uiLabel?.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+            uiLabel?.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+            uiLabel?.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+//            uiLabel?.heightAnchor.constraint(greaterThanOrEqualToConstant: (view.frame.height / 5) - 10).isActive = true
+            uiLabel?.heightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.2, constant: -10).isActive = true
+            
+            if let previousLabel = previousUILabel {
+                uiLabel?.topAnchor.constraint(equalTo: previousLabel.bottomAnchor, constant: 10).isActive = true
+                uiLabel?.heightAnchor.constraint(equalTo: previousLabel.heightAnchor).isActive = true
+            } else {
+                uiLabel?.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            }
+            previousUILabel = uiLabel
+        }
+        
+        if let last = previousUILabel {
+            last.bottomAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 10).isActive = true
         }
 //        addHorizontalConstraints()
 //        addVerticalConstraints()
